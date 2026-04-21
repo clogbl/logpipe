@@ -73,3 +73,21 @@ func TestDeduplicator_EmptyLines(t *testing.T) {
 		t.Fatal("expected consecutive empty lines to be suppressed")
 	}
 }
+
+func TestDeduplicator_ResetRestoresEmptyState(t *testing.T) {
+	// Verify that Reset allows any line (including the previously seen one)
+	// to be treated as new, and that subsequent duplicates are still suppressed.
+	d := NewDeduplicator()
+	d.Format("hello")
+	d.Format("world")
+	d.Reset()
+
+	// After reset, "world" should be accepted again.
+	if _, ok := d.Format("world"); !ok {
+		t.Fatal("expected line to be kept immediately after reset")
+	}
+	// A consecutive duplicate following reset should still be suppressed.
+	if _, ok := d.Format("world"); ok {
+		t.Fatal("expected duplicate to be suppressed after reset")
+	}
+}
