@@ -64,3 +64,12 @@ func TestFormatter_JSONEscaping(t *testing.T) {
 		t.Errorf("json escaping: expected escaped quotes in %q", got)
 	}
 }
+
+func TestFormatter_PrefixEmpty(t *testing.T) {
+	// WithPrefix("") should behave the same as no prefix option.
+	f, _ := NewFormatter("prefix", WithPrefix(""))
+	got := f.Format("hello")
+	if got != "hello" {
+		t.Errorf("prefix empty: expected %q, got %q", "hello", got)
+	}
+}
